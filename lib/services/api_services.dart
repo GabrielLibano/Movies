@@ -1,6 +1,11 @@
 import 'package:movie_app/models/movie_model.dart';
+import 'package:movie_app/common/utils.dart';
+import 'package:http/http.dart' as http;
 
+const baseUrl = 'https://api.themoviedb.org/3/';
+const key = '?api_key=$apiKey';
 class ApiServices {
+
   List<Movie> getMovies() {
     // Cria a lista de filmes
 

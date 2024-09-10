@@ -12,9 +12,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late Future<List<Movie>> nowPlayingMovies;
   final ApiServices apiServices = ApiServices();
   @override
   void initState() {
+    nowPlayingMovies = apiServices.getMoviesAsync();
     super.initState();
   }
 
@@ -74,26 +76,23 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              FutureBuilder<List<Movie>>(
-                future: apiServices.getMoviesAsync(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
+               FutureBuilder(
+                  future: nowPlayingMovies,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Error: ${snapshot.error}'),
+                      );
+                    }
+                    return MoviesHorizontalList(
+                      movies: snapshot.data!,
                     );
-                  } else if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('Erro ao carregar os filmes'),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Text('Nenhum filme encontrado'),
-                    );
-                  } else {
-                    return MoviesHorizontalList(movies: snapshot.data!);
-                  }
-                },
-              ),
+                  }),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: Text(
@@ -105,26 +104,23 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              FutureBuilder<List<Movie>>(
-                future: apiServices.getMoviesAsync(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
+              FutureBuilder(
+                  future: nowPlayingMovies,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Error: ${snapshot.error}'),
+                      );
+                    }
+                    return MoviesHorizontalList(
+                      movies: snapshot.data!,
                     );
-                  } else if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('Erro ao carregar os filmes'),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Text('Nenhum filme encontrado'),
-                    );
-                  } else {
-                    return MoviesHorizontalList(movies: snapshot.data!);
-                  }
-                },
-              ),
+                  }),
               const SizedBox(
                 height: 20,
               ),

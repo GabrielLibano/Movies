@@ -24,8 +24,8 @@ class _TopRatedPageState extends State<TopRatedPage> {
       appBar: AppBar(
         title: const Text('Top Rated Movies'),
       ),
-      body: FutureBuilder<List<Movie>>(
-          future: apiServices.getMoviesAsync(),
+      body: FutureBuilder<Result>(
+          future: apiServices.getTopRatedMovies(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -35,15 +35,15 @@ class _TopRatedPageState extends State<TopRatedPage> {
               return const Center(
                 child: Text('Erro ao carregar os filmes top rated'),
               );
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            } else if (!snapshot.hasData || snapshot.data!.movies.isEmpty) {
               return const Center(
                 child: Text('Nenhum filme top rated encontrado'),
               );
             } else {
               return ListView.builder(
-                  itemCount: snapshot.data?.length,
+                  itemCount: snapshot.data?.movies.length,
                   itemBuilder: (context, index) {
-                    return TopRatedMovie(movie: snapshot.data![index]);
+                    return TopRatedMovie(movie: snapshot.data!.movies[index]);
                   });
             }
           }),

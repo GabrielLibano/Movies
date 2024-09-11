@@ -12,11 +12,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late Future<List<Movie>> nowPlayingMovies;
+  late Future<Result> nowPlayingMovies;
   final ApiServices apiServices = ApiServices();
   @override
   void initState() {
-    nowPlayingMovies = apiServices.getMoviesAsync();
+    nowPlayingMovies = apiServices.getNowPlayingMovies();
     super.initState();
   }
 
@@ -42,8 +42,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              FutureBuilder<List<Movie>>(
-                future: apiServices.getMoviesAsync(),
+              FutureBuilder<Result>(
+                future: apiServices.getNowPlayingMovies(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
@@ -53,12 +53,12 @@ class _HomePageState extends State<HomePage> {
                     return const Center(
                       child: Text('Erro ao carregar os filmes'),
                     );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  } else if (!snapshot.hasData || snapshot.data!.movies.isEmpty) {
                     return const Center(
                       child: Text('Nenhum filme encontrado'),
                     );
                   } else {
-                    return NowPlayingList(movies: snapshot.data!);
+                    return NowPlayingList(movies: snapshot.data!.movies);
                   }
                 },
               ),
@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
                     return MoviesHorizontalList(
-                      movies: snapshot.data!,
+                      movies: snapshot.data!.movies,
                     );
                   }),
               const Padding(
@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
                     return MoviesHorizontalList(
-                      movies: snapshot.data!,
+                      movies: snapshot.data!.movies,
                     );
                   }),
               const SizedBox(

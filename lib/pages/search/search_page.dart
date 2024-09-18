@@ -13,7 +13,6 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   late Future<Result> searchMovies;
-  String filmName = '';
   final ApiServices apiServices = ApiServices();
 
   @override
@@ -24,7 +23,7 @@ class _SearchPageState extends State<SearchPage> {
 
   void _updateSearchMovies(String name) {
     setState(() {
-      searchMovies = apiServices.getSearchMovies(filmName);
+      searchMovies = apiServices.getSearchMovies(name);
     });
   }
 

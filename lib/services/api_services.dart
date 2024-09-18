@@ -6,28 +6,29 @@ import 'package:http/http.dart' as http;
 
 const baseUrl = 'https://api.themoviedb.org/3/';
 const key = 'api_key=$apiKey';
+
 class ApiServices {
 
-  Future<Result> getSearchMovies(String filmName) async {
-    var endPoint = 'search/movie?query=$filmName&';
-    final url = '$baseUrl$endPoint$key';
-    print(url);
-
-    final response = await http.get(Uri.parse(url));
+  Future<Result> getSearchMovies(String searchText) async {
+    final endPoint = 'search/movie?query=$searchText';
+    final url = '$baseUrl$endPoint';
+    final response = await http.get(Uri.parse(url), headers: {
+      'Authorization':
+          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3NTAyYjhjMDMxYzc5NzkwZmU1YzBiNGY5NGZkNzcwZCIsInN1YiI6IjYzMmMxYjAyYmE0ODAyMDA4MTcyNjM5NSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.N1SoB26LWgsA33c-5X0DT5haVOD4CfWfRhwpDu9eGkc'
+    });
     if (response.statusCode == 200) {
-      print(response.body);
-      return Result.fromJson(jsonDecode(response.body));
+      final movies = Result.fromJson(jsonDecode(response.body));
+      return movies;
     }
-    throw Exception('failed the movie');
+    throw Exception('failed to load  search movie ');
   }
-
 
   Future<Result> getTopRatedMovies() async {
     const endpoint = "movie/top_rated";
     const url = "$baseUrl$endpoint?$key";
 
     final response = await http.get(Uri.parse(url));
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       return Result.fromJson(jsonDecode(response.body));
     }
     throw Exception("Ocorreu um erro ao carregar os filmes top rated");
@@ -38,7 +39,7 @@ class ApiServices {
     const url = "$baseUrl$endpoint?$key";
 
     final response = await http.get(Uri.parse(url));
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       return Result.fromJson(jsonDecode(response.body));
     }
     throw Exception("Ocorreu um erro ao carregar os filmes top rated");

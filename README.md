@@ -1,16 +1,17 @@
-# movie_app
+# Movie App
 
-A new Flutter project.
+Esse é um projeto desenvolvido em flutter com o intuito de estudar alguns pontos da linguagem por exemplo:
+ - Padrões de camadas
+ - Estados
+ - Chamadas via API
+ - FutureBuilder
+ - Chamadas assincronas e como tratalas
+ - Listview builder
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Para o projeto rodar, vc precisara instalar o sdk flutter na sua maquina.
+Quando baixar o projeto va nas pastas analysis_options.yaml e pubspec.yaml e da o comando "Control S" em ambas.
+Assim ele baixara as dependencias.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Após isso, vá até o main.dart e na função main, clique em RUN.

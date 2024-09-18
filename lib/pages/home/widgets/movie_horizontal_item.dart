@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/common/utils.dart';
 import 'package:movie_app/models/movie_model.dart';
-
+import 'package:movie_app/pages/movie_detail/movie_detail_page.dart';
 class MovieHorizontalItem extends StatelessWidget {
   const MovieHorizontalItem({
     super.key,
@@ -34,6 +34,14 @@ class MovieHorizontalItem extends StatelessWidget {
               fit: BoxFit.cover,
               image: NetworkImage('$imageUrl${movie.posterPath}'),
             ),
+          ),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MovieDetailPage(movieId: movie.id)),
+              );
+            },
           ),
         ),
         Positioned(
@@ -96,7 +104,7 @@ class MovieHorizontalItem extends StatelessWidget {
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }

@@ -10,6 +10,30 @@ const baseUrl = 'https://api.themoviedb.org/3/';
 const key = 'api_key=$apiKey';
 
 class ApiServices {
+  Future<bool> addFavoriteMovie(Movie movie) async {
+    var bodyRequest = {
+      "media_type": "movie",
+    "media_id": movie.id, // Altere 'movie' para 'media_id'
+    "favorite": true
+    };
+
+    const endPoint = 'account/$accontId/favorite';
+    const url = '$baseUrl$endPoint';
+
+    final response = await http.post(Uri.parse(url),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNWU5OGM2ZjBkZTAwMjdmODY2ZTA3M2Q0OTRjMTQ0MCIsIm5iZiI6MTcyNjg0OTExNS40NTU2NjEsInN1YiI6IjY2ZWQ5ZGViMTg0NjU3MDA4ZWZlMTRjOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MUh5_K2pGLkaUt5Gwbx3Qq5-QnKecaUBEuhC4q2Zgec'
+        },
+        body: jsonEncode(bodyRequest));
+
+    if (response.statusCode == 201) {
+      return true;
+    }
+    throw Exception('Erro ${response.statusCode}: ${response.body}'); // Inclua o corpo da resposta para depuração
+  }
 
   Future<Result> getSearchMoviesByGenres(int id) async {
     final endPoint = 'discover/movie?with_genres=$id&';
@@ -23,7 +47,6 @@ class ApiServices {
     throw Exception('failed to load  movie details');
   }
 
-
   Future<List<MovieGenreModel>> getGeners() async {
     const endPoint = 'genre/movie/list';
     const url = '$baseUrl$endPoint?$key';
@@ -36,12 +59,12 @@ class ApiServices {
   }
 
   List<MovieGenreModel> parseGenres(String responseBody) {
-  final parsed = jsonDecode(responseBody);
+    final parsed = jsonDecode(responseBody);
 
-  return (parsed['genres'] as List)
-      .map((json) => MovieGenreModel.fromJson(json))
-      .toList();
-}
+    return (parsed['genres'] as List)
+        .map((json) => MovieGenreModel.fromJson(json))
+        .toList();
+  }
 
   Future<Result> getMovieRecommendations(int movieId) async {
     final endPoint = 'movie/$movieId/recommendations';
@@ -70,7 +93,7 @@ class ApiServices {
     final url = '$baseUrl$endPoint';
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization':
-          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3NTAyYjhjMDMxYzc5NzkwZmU1YzBiNGY5NGZkNzcwZCIsInN1YiI6IjYzMmMxYjAyYmE0ODAyMDA4MTcyNjM5NSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.N1SoB26LWgsA33c-5X0DT5haVOD4CfWfRhwpDu9eGkc'
+          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNWU5OGM2ZjBkZTAwMjdmODY2ZTA3M2Q0OTRjMTQ0MCIsIm5iZiI6MTcyNjg0OTExNS40NTU2NjEsInN1YiI6IjY2ZWQ5ZGViMTg0NjU3MDA4ZWZlMTRjOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MUh5_K2pGLkaUt5Gwbx3Qq5-QnKecaUBEuhC4q2Zgec'
     });
     if (response.statusCode == 200) {
       final movies = Result.fromJson(jsonDecode(response.body));

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/pages/search/widgets/movie_search.dart';
 import 'package:movie_app/services/api_services.dart';
 import 'package:movie_app/models/movie_model.dart';
+import 'package:movie_app/models/movie_genre_model.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -13,17 +14,27 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   late Future<Result> searchMovies;
+  late Future<List<MovieGenreModel>> genres;
   final ApiServices apiServices = ApiServices();
+  int? selectedGenreId;
 
   @override
   void initState() {
     searchMovies = apiServices.getTopRatedMovies();
+    genres = apiServices.getGeners();
     super.initState();
   }
 
   void _updateSearchMovies(String name) {
     setState(() {
       searchMovies = apiServices.getSearchMovies(name);
+    });
+  }
+
+  void _updateFilterParms(int id) {
+    setState(() {
+      selectedGenreId = id;
+      searchMovies = apiServices.getSearchMoviesByGenres(id);
     });
   }
 
@@ -55,6 +66,35 @@ class _SearchPageState extends State<SearchPage> {
                 },
               ),
             ),
+            Container(
+                padding: const EdgeInsets.all(0),
+                child: FutureBuilder<List<MovieGenreModel>>(
+                  future: genres,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator(); // Mostra um loading enquanto os dados carregam
+                    } else if (snapshot.hasError) {
+                      return const Text('Erro ao carregar gêneros');
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Text('Nenhum gênero disponível');
+                    } else {
+                      List<MovieGenreModel> genres = snapshot.data!;
+                      return DropdownButton<int>(
+                        hint: const Text("Select Genre"),
+                        value: selectedGenreId,
+                        onChanged: (int? newValue) {
+                          _updateFilterParms(newValue ?? 0);
+                        },
+                        items: genres.map<DropdownMenuItem<int>>((genre) {
+                          return DropdownMenuItem<int>(
+                            value: genre.id,
+                            child: Text(genre.name),
+                          );
+                        }).toList(),
+                      );
+                    }
+                  },
+                )),
             const SizedBox(
               height: 10,
             ),
@@ -69,21 +109,20 @@ class _SearchPageState extends State<SearchPage> {
                   return const Center(
                     child: Text('Erro ao carregar os filmes'),
                   );
-                } else if (!snapshot.hasData ||
-                    snapshot.data!.movies.isEmpty) {
+                } else if (!snapshot.hasData || snapshot.data!.movies.isEmpty) {
                   return const Center(
                     child: Text('Nenhum filme encontrado'),
                   );
                 } else {
                   return Expanded(
                       child: ListView.builder(
-                        itemCount: snapshot.data!.movies.length,
-                        itemBuilder: (context, index) {
-                          return MovieSearch(
-                            movie: snapshot.data!.movies[index],
-                          );
-                        },
-                      ));
+                    itemCount: snapshot.data!.movies.length,
+                    itemBuilder: (context, index) {
+                      return MovieSearch(
+                        movie: snapshot.data!.movies[index],
+                      );
+                    },
+                  ));
                 }
               },
             ),

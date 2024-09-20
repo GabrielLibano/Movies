@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:movie_app/models/movie_genre_model.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/models/movie_detail_model.dart';
 import 'package:movie_app/common/utils.dart';
@@ -9,6 +10,38 @@ const baseUrl = 'https://api.themoviedb.org/3/';
 const key = 'api_key=$apiKey';
 
 class ApiServices {
+
+  Future<Result> getSearchMoviesByGenres(int id) async {
+    final endPoint = 'discover/movie?with_genres=$id&';
+
+    final url = '$baseUrl$endPoint$key';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return Result.fromJson(jsonDecode(response.body));
+    }
+    throw Exception('failed to load  movie details');
+  }
+
+
+  Future<List<MovieGenreModel>> getGeners() async {
+    const endPoint = 'genre/movie/list';
+    const url = '$baseUrl$endPoint?$key';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return parseGenres(response.body);
+    }
+    throw Exception('failed to load  movie details');
+  }
+
+  List<MovieGenreModel> parseGenres(String responseBody) {
+  final parsed = jsonDecode(responseBody);
+
+  return (parsed['genres'] as List)
+      .map((json) => MovieGenreModel.fromJson(json))
+      .toList();
+}
 
   Future<Result> getMovieRecommendations(int movieId) async {
     final endPoint = 'movie/$movieId/recommendations';

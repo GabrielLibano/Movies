@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/pages/favorite/favorite_page.dart';
 import 'package:movie_app/pages/home/home_page.dart';
 import 'package:movie_app/pages/search/search_page.dart';
 import 'package:movie_app/pages/top_rated/top_rated_page.dart';
@@ -29,7 +30,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           children: const [
             HomePage(),
             SearchPage(),
-            TopRatedPage(),
+            FavoritePage(),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -38,8 +39,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.trending_up), label: 'Top Rated'),
+            // BottomNavigationBarItem(
+            //     icon: Icon(Icons.trending_up), label: 'Top Rated'),
+            BottomNavigationBarItem(icon: Icon(Icons.favorite_outline), label: 'Favorite'),
           ],
           onTap: (pagina) {
             pc.animateToPage(

@@ -13,15 +13,14 @@ const key = 'api_key=$apiKey';
 class ApiServices {
 
   Future<Result> getFavoritesMovies() async {
-    const endPoint = 'account/$accontId/favorite&sort_by=created_at.asc';
+    const endPoint = 'account/$accontId/favorite/movies?sort_by=created_at.desc';
     const url = '$baseUrl$endPoint';
 
     final response = await http.get(Uri.parse(url),
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json',
           'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNWU5OGM2ZjBkZTAwMjdmODY2ZTA3M2Q0OTRjMTQ0MCIsIm5iZiI6MTcyNjg0OTExNS40NTU2NjEsInN1YiI6IjY2ZWQ5ZGViMTg0NjU3MDA4ZWZlMTRjOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MUh5_K2pGLkaUt5Gwbx3Qq5-QnKecaUBEuhC4q2Zgec'
+              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNWU5OGM2ZjBkZTAwMjdmODY2ZTA3M2Q0OTRjMTQ0MCIsIm5iZiI6MTcyNjg0OTMzNi40MjAxNTQsInN1YiI6IjY2ZWQ5ZGViMTg0NjU3MDA4ZWZlMTRjOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.sbQIs2shUPsXwoJC8D_tn4kdRbQ4xfz6Y3cpVHzq0qc'
         });
     if (response.statusCode == 200) {
       return Result.fromJson(jsonDecode(response.body));

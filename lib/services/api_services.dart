@@ -4,12 +4,56 @@ import 'package:movie_app/models/movie_genre_model.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/models/movie_detail_model.dart';
 import 'package:movie_app/common/utils.dart';
+import 'package:movie_app/models/movie_favorite_response_model.dart';
 import 'package:http/http.dart' as http;
 
 const baseUrl = 'https://api.themoviedb.org/3/';
 const key = 'api_key=$apiKey';
 
 class ApiServices {
+
+  Future<Result> getFavoritesMovies() async {
+    const endPoint = 'account/$accontId/favorite/movies?sort_by=created_at.desc';
+    const url = '$baseUrl$endPoint';
+
+    final response = await http.get(Uri.parse(url),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization':
+              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNWU5OGM2ZjBkZTAwMjdmODY2ZTA3M2Q0OTRjMTQ0MCIsIm5iZiI6MTcyNjg0OTMzNi40MjAxNTQsInN1YiI6IjY2ZWQ5ZGViMTg0NjU3MDA4ZWZlMTRjOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.sbQIs2shUPsXwoJC8D_tn4kdRbQ4xfz6Y3cpVHzq0qc'
+        });
+    if (response.statusCode == 200) {
+      return Result.fromJson(jsonDecode(response.body));
+    }
+    throw Exception('failed to load favorite movie');
+  }
+  
+
+  Future<MovieFavoriteResponseModel> addFavoriteMovie(Movie movie) async {
+    var bodyRequest = {
+      "media_type": "movie",
+      "media_id": movie.id, // Altere 'movie' para 'media_id'
+      "favorite": true
+    };
+
+    const endPoint = 'account/$accontId/favorite';
+    const url = '$baseUrl$endPoint';
+
+    final response = await http.post(Uri.parse(url),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNWU5OGM2ZjBkZTAwMjdmODY2ZTA3M2Q0OTRjMTQ0MCIsIm5iZiI6MTcyNjg0OTExNS40NTU2NjEsInN1YiI6IjY2ZWQ5ZGViMTg0NjU3MDA4ZWZlMTRjOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MUh5_K2pGLkaUt5Gwbx3Qq5-QnKecaUBEuhC4q2Zgec'
+        },
+        body: jsonEncode(bodyRequest));
+
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      return MovieFavoriteResponseModel.fromJson(jsonDecode(response.body));
+    }
+    throw Exception(
+        'Erro ${response.statusCode}: ${response.body}'); // Inclua o corpo da resposta para depuração
+  }
 
   Future<Result> getSearchMoviesByGenres(int id) async {
     final endPoint = 'discover/movie?with_genres=$id&';
